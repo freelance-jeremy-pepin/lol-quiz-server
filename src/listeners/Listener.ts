@@ -1,13 +1,18 @@
-export default abstract class Listener {
-    protected io: any = null;
+import Store from '../store/Store';
 
-    protected socket: any = null;
+export default abstract class Listener {
+    protected io: any;
+
+    protected socket: any;
+
+    protected store: Store;
 
     protected debug: boolean = true;
 
-    protected constructor(io: any, socket: any) {
+    protected constructor(io: any, socket: any, store: Store) {
         this.io = io;
         this.socket = socket;
+        this.store = store;
     }
 
     protected receive(eventName: string, ...opts: any) {
@@ -18,7 +23,7 @@ export default abstract class Listener {
 
     protected send(eventName: string, ...opts: any) {
         this.socket.emit(eventName, ...opts);
-        console.log('emitted to sender', eventName);
+        console.log('emitted to sender', eventName, ...opts);
     }
 
     protected sendToAll(eventName: string, ...opts: any) {

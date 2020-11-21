@@ -1,11 +1,10 @@
 import User from '../models/User';
+import Store from '../store/Store';
 import Listener from './Listener';
 
 export default class UserListener extends Listener {
-    private _users: User[] = [];
-
-    constructor(io: any, socket: any) {
-        super(io, socket);
+    constructor(io: any, socket: any, store: Store) {
+        super(io, socket, store);
     }
 
     public registerListener() {
@@ -17,7 +16,7 @@ export default class UserListener extends Listener {
         this.socket.on('get_all_users', () => {
             this.receive('get_all_users');
 
-            this.send('all_users', this._users);
+            this.send('all_users', this.store.users);
         });
     }
 
@@ -26,14 +25,14 @@ export default class UserListener extends Listener {
             this.receive('create_or_update_user', user);
 
             // Cherche l'utilisateur.
-            const indexFound = this._users.findIndex(u => u.id === user.id);
+            const indexFound = this.store.users.findIndex(u => u.id === user.id);
 
             // Si l'utilisateur existe, le modifie.
             // Sinon l'ajoute.
             if (indexFound > -1) {
-                this._users[indexFound] = user;
+                this.store.users = this.store.users.map(u => (u.id === user.id ? user : u));
             } else {
-                this._users.push(user);
+                this.store.users.push(user);
             }
 
             this.sendToAll('user_created_or_updated', user);

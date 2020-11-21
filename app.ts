@@ -1,5 +1,6 @@
 import RoomListener from './src/listeners/RoomListener';
 import UserListener from './src/listeners/UserListener';
+import Store from './src/store/Store';
 
 const app = require('express')();
 const http = require('http').createServer(app);
@@ -11,12 +12,14 @@ const io = require('socket.io')(http, {
     }
 });
 
+const store = new Store();
+
 io.on('connection', (socket: any) => {
 
-    const userListener = new UserListener(io, socket);
+    const userListener = new UserListener(io, socket, store);
     userListener.registerListener();
 
-    const roomListener = new RoomListener(io, socket);
+    const roomListener = new RoomListener(io, socket, store);
     roomListener.registerListener();
 });
 
