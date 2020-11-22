@@ -15,22 +15,22 @@ export default abstract class Listener {
         this.store = store;
     }
 
-    protected receive(eventName: string, ...opts: any) {
+    protected receive(eventName: string, payload: any = null) {
         if (this.debug) {
-            console.log('received', eventName, ...opts);
+            console.log('received', eventName, payload);
         }
     }
 
-    protected send(eventName: string, ...opts: any) {
-        this.socket.emit(eventName, ...opts);
-        console.log('emitted to sender', eventName, ...opts);
+    protected send(eventName: string, payload: any) {
+        this.socket.emit(eventName, payload);
+        console.log('emitted to sender', eventName, payload);
     }
 
-    protected sendToAll(eventName: string, ...opts: any) {
-        this.io.emit(eventName, ...opts);
+    protected sendToAll(eventName: string, payload: any) {
+        this.io.emit(eventName, payload);
 
         if (this.debug) {
-            console.log('emitted to all', eventName, ...opts);
+            console.log('emitted to all', eventName, payload);
         }
     }
 

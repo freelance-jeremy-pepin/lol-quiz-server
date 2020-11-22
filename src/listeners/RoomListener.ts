@@ -30,38 +30,39 @@ export default class RoomListener extends Listener {
 
             this.store.rooms.push(newRoomName);
 
-            this.send('room_created', newRoomName);
+            this.sendToAll('room_created', newRoomName);
         });
     }
 
     public onJoinRoom() {
         this.socket.on('join_room', (roomToJoin: Room, participant: Participant) => {
-            this.receive('join_room', roomToJoin, participant);
+            this.receive('join_room', { roomToJoin, participant });
 
-            const roomToJoinFound = this.store.rooms.find(r => r.id === roomToJoin.id);
+            this.store.rooms = this.store.rooms.map(r => {
+                if (r.id === roomToJoin.id) {
+                    r.participants.push(participant);
+                }
 
-            if (roomToJoinFound) {
-                roomToJoinFound.participants.push(participant);
+                return r;
+            });
 
-                this.sendToAll('room_joined', roomToJoin, participant);
-            }
+            this.sendToAll('room_joined', { roomJoined: roomToJoin, participant });
         });
     }
 
     public onLeaveRoom() {
         this.socket.on('leave_room', (roomToLeave: Room, participant: Participant) => {
-            this.receive('leave_room', roomToLeave, participant);
+            this.receive('leave_room', { roomToLeave, participant });
 
-            const roomLeftFound = this.store.rooms.find(r => r.id === roomToLeave.id);
-            if (roomLeftFound) {
-                const participantIndexToRemove = roomLeftFound.participants.findIndex(p => p.id === participant.id);
-
-                if (participantIndexToRemove > -1) {
-                    roomLeftFound.participants.splice(participantIndexToRemove, 1);
-
-                    this.sendToAll('room_left', roomToLeave, participant)
+            this.store.rooms = this.store.rooms.map(r => {
+                if (r.id === roomToLeave.id) {
+                    r.participants = r.participants.filter(p => p.id !== participant.id);
                 }
-            }
+
+                return r;
+            });
+
+            this.sendToAll('room_left', { roomLeft: roomToLeave, participant });
         });
     }
 
@@ -69,8 +70,7 @@ export default class RoomListener extends Listener {
         this.socket.on('delete_room', (roomToDelete: Room) => {
             this.receive('delete_room');
 
-            const indexToDelete = this.store.rooms.findIndex(r => r.id === roomToDelete.id);
-            this.store.rooms.splice(indexToDelete, 1);
+            this.store.rooms = this.store.rooms.filter(r => r.id !== roomToDelete.id);
 
             this.sendToAll('room_deleted', roomToDelete)
         });
