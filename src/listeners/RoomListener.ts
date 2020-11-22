@@ -1,5 +1,6 @@
 import Participant from '../models/Participant';
 import Room from '../models/Room';
+import User from '../models/User';
 import Store from '../store/Store';
 import Listener from './Listener';
 
@@ -10,27 +11,53 @@ export default class RoomListener extends Listener {
 
     public registerListener() {
         this.onGetAllRooms();
-        this.onCreateRoom();
+        this.onGetRoomById();
+        this.onCreateOrUpdateRoom();
         this.onJoinRoom();
         this.onLeaveRoom();
         this.onDeleteRoom();
+        this.onUpdateParticipant();
     }
 
     public onGetAllRooms() {
         this.socket.on('get_all_rooms', () => {
-            console.log(this.store.rooms)
             this.receive('get_all_rooms');
             this.send('all_rooms', this.store.rooms);
         });
     }
 
-    public onCreateRoom() {
-        this.socket.on('create_room', (newRoomName: Room) => {
-            this.receive('create_room', newRoomName);
+    public onGetRoomById() {
+        this.socket.on('get_room_by_id', (id: string, user: User) => {
+            this.receive('get_room_by_id', { id, user });
 
-            this.store.rooms.push(newRoomName);
+            const roomFound = this.store.rooms.find(r => {
+                if (r.id === id) {
+                    return r.participants.find(p => p.userId === user.id) !== undefined;
+                }
 
-            this.sendToAll('room_created', newRoomName);
+                return false;
+            });
+
+            this.send('room_by_id', roomFound ? roomFound : null);
+        });
+    }
+
+    public onCreateOrUpdateRoom() {
+        this.socket.on('create_or_update_room', (room: Room) => {
+            this.receive('create_room', room);
+
+            // Cherche la salle.
+            const indexFound = this.store.rooms.findIndex(r => r.id === room.id);
+
+            // Si la salle existe, la modifie.
+            // Sinon l'ajoute.
+            if (indexFound > -1) {
+                this.store.rooms = this.store.rooms.map(r => (r.id === room.id ? room : r));
+            } else {
+                this.store.rooms.push(room);
+            }
+
+            this.sendToAll('room_created_or_updated', room);
         });
     }
 
@@ -74,5 +101,21 @@ export default class RoomListener extends Listener {
 
             this.sendToAll('room_deleted', roomToDelete)
         });
+    }
+
+    public onUpdateParticipant() {
+        this.socket.on('update_participant', (room: Room, participant: Participant) => {
+            this.receive('update_participant', { room, participant });
+
+            this.store.rooms = this.store.rooms.map(r => {
+                if (r.id === room.id) {
+                    r.participants = r.participants.map(p => (p.id === participant.id ? participant : p));
+                }
+
+                return r;
+            });
+
+            this.sendToAll('participant_updated', { room, participantUpdated: participant });
+        })
     }
 }

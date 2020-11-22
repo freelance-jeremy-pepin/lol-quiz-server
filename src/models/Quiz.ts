@@ -1,4 +1,5 @@
 import Model from 'src/models/Model';
+import { uniqueID } from 'src/utils/randomNumber';
 
 export default interface Quiz extends Model {
     name: string;
@@ -7,7 +8,7 @@ export default interface Quiz extends Model {
 
 export function createDefaultQuiz(): Quiz {
     return {
-        id: '',
+        id: uniqueID(),
         name: '',
         internalName: '',
     };
@@ -16,7 +17,13 @@ export function createDefaultQuiz(): Quiz {
 export const quizList: Quiz[] = [
     {
         id: '1',
-        name: 'Name quiz',
-        internalName: 'name-quiz',
+        name: `Find item's name`,
+        internalName: 'item-name-quiz',
+    },
+
+    {
+        id: '2',
+        name: `Ultra secret quiz ... chut !`,
+        internalName: 'an-ultra-secret-quiz',
     },
 ];

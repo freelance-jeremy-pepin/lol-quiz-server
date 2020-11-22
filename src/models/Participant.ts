@@ -1,20 +1,27 @@
-import AnswerHistory from 'src/models/AnswerHistory';
-import User, { createDefaultUser } from 'src/models/User';
 import Model from 'src/models/Model';
+import { uniqueID } from 'src/utils/randomNumber';
+import { createDefaultTime, Time } from 'src/models/Time';
+import AnswerHistoryItem from 'src/models/AnswerHistoryItem';
 
 export default interface Participant extends Model {
-    user: User;
-    currentQuestionNumber: string;
+    userId: string;
+    score: number;
+    currentQuestionNumber: number;
     hasFinished: boolean;
-    answerHistory: AnswerHistory[];
+    answersHistoryItem: AnswerHistoryItem[];
+    completeTime: Time;
+    isReady: boolean;
 }
 
 export function createDefaultParticipant(): Participant {
     return {
-        id: '',
-        user: createDefaultUser(),
-        currentQuestionNumber: '',
+        id: uniqueID(),
+        userId: '',
+        score: 0,
+        currentQuestionNumber: 0,
         hasFinished: false,
-        answerHistory: [],
+        answersHistoryItem: [],
+        completeTime: createDefaultTime(),
+        isReady: false,
     };
 }

@@ -1,5 +1,6 @@
-import StatsLolApi from 'src/models/LolApi/StatsLolApi';
 import MapsLolApi from 'src/models/LolApi/MapsLolApi';
+import ItemStatsLolApi from './ItemStatsLolApi';
+import ImageLolApi from './ImageLolApi';
 
 export default interface ItemLolApi {
     id?: number;
@@ -30,20 +31,12 @@ export default interface ItemLolApi {
     hideFromAll?: boolean;
     requiredChampion?: string;
     requiredAlly?: string;
-    stats?: StatsLolApi;
+    stats?: ItemStatsLolApi;
     tags?: string[];
     maps?: MapsLolApi;
-    image?: {
-        full?: string;
-        group?: string;
-        h?: number;
-        sprite?: string;
-        w?: number;
-        x?: number;
-        y?: number;
-    };
+    image?: ImageLolApi;
 }
 
 export function createDefaultLolApiItem(): ItemLolApi {
-    return { };
+    return {};
 }
