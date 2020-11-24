@@ -7,7 +7,7 @@ const http = require('http').createServer(app);
 //@ts-ignore
 const io = require('socket.io')(http, {
     cors: {
-        origin: 'http://dev.lol-quiz.com:4000',
+        origin: ['http://dev.lol-quiz.com:4000', 'http://prod.lol-quiz.com'],
         methods: ['GET', 'POST'],
     }
 });
