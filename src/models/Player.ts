@@ -3,17 +3,17 @@ import { uniqueID } from 'src/utils/randomNumber';
 import { createDefaultTime, Time } from 'src/models/Time';
 import AnswerHistoryItem from 'src/models/AnswerHistoryItem';
 
-export default interface Participant extends Model {
+export default interface Player extends Model {
     userId: string;
     score: number;
     currentQuestionNumber: number;
     hasFinished: boolean;
-    answersHistoryItem: AnswerHistoryItem[];
+    answersHistoryItem: AnswerHistoryItem[]; // TODO: à remplace par AnswerHistory[]
     completeTime: Time;
     isReady: boolean;
 }
 
-export function createDefaultParticipant(): Participant {
+export function createDefaultPlayer(): Player {
     return {
         id: uniqueID(),
         userId: '',

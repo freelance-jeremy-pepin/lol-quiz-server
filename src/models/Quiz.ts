@@ -3,7 +3,7 @@ import { uniqueID } from 'src/utils/randomNumber';
 
 export default interface Quiz extends Model {
     name: string;
-    internalName: string;
+    internalName: QuizListInternalName | '';
 }
 
 export function createDefaultQuiz(): Quiz {
@@ -14,16 +14,21 @@ export function createDefaultQuiz(): Quiz {
     };
 }
 
+export enum QuizListInternalName {
+    ItemNameQuiz = 'item-name-quiz',
+    AnUltraSecretQuiz = 'an-ultra-secret-quiz',
+}
+
 export const quizList: Quiz[] = [
     {
         id: '1',
         name: `Find item's name`,
-        internalName: 'item-name-quiz',
+        internalName: QuizListInternalName.ItemNameQuiz,
     },
 
     {
         id: '2',
         name: `Ultra secret quiz ... chut !`,
-        internalName: 'an-ultra-secret-quiz',
+        internalName: QuizListInternalName.AnUltraSecretQuiz,
     },
 ];

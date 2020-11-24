@@ -1,4 +1,4 @@
-import Participant from '../models/Participant';
+import Player from '../models/Player';
 import Room from '../models/Room';
 import User from '../models/User';
 import Store from '../store/Store';
@@ -16,7 +16,7 @@ export default class RoomListener extends Listener {
         this.onJoinRoom();
         this.onLeaveRoom();
         this.onDeleteRoom();
-        this.onUpdateParticipant();
+        this.onUpdatePlayer();
     }
 
     public onGetAllRooms() {
@@ -32,7 +32,7 @@ export default class RoomListener extends Listener {
 
             const roomFound = this.store.rooms.find(r => {
                 if (r.id === id) {
-                    return r.participants.find(p => p.userId === user.id) !== undefined;
+                    return r.players.find(p => p.userId === user.id) !== undefined;
                 }
 
                 return false;
@@ -62,34 +62,34 @@ export default class RoomListener extends Listener {
     }
 
     public onJoinRoom() {
-        this.socket.on('join_room', (roomToJoin: Room, participant: Participant) => {
-            this.receive('join_room', { roomToJoin, participant });
+        this.socket.on('join_room', (roomToJoin: Room, player: Player) => {
+            this.receive('join_room', { roomToJoin, player });
 
             this.store.rooms = this.store.rooms.map(r => {
                 if (r.id === roomToJoin.id) {
-                    r.participants.push(participant);
+                    r.players.push(player);
                 }
 
                 return r;
             });
 
-            this.sendToAll('room_joined', { roomJoined: roomToJoin, participant });
+            this.sendToAll('room_joined', { roomJoined: roomToJoin, player });
         });
     }
 
     public onLeaveRoom() {
-        this.socket.on('leave_room', (roomToLeave: Room, participant: Participant) => {
-            this.receive('leave_room', { roomToLeave, participant });
+        this.socket.on('leave_room', (roomToLeave: Room, player: Player) => {
+            this.receive('leave_room', { roomToLeave, player });
 
             this.store.rooms = this.store.rooms.map(r => {
                 if (r.id === roomToLeave.id) {
-                    r.participants = r.participants.filter(p => p.id !== participant.id);
+                    r.players = r.players.filter(p => p.id !== player.id);
                 }
 
                 return r;
             });
 
-            this.sendToAll('room_left', { roomLeft: roomToLeave, participant });
+            this.sendToAll('room_left', { roomLeft: roomToLeave, player });
         });
     }
 
@@ -103,19 +103,19 @@ export default class RoomListener extends Listener {
         });
     }
 
-    public onUpdateParticipant() {
-        this.socket.on('update_participant', (room: Room, participant: Participant) => {
-            this.receive('update_participant', { room, participant });
+    public onUpdatePlayer() {
+        this.socket.on('update_player', (room: Room, player: Player) => {
+            this.receive('update_player', { room, player });
 
             this.store.rooms = this.store.rooms.map(r => {
                 if (r.id === room.id) {
-                    r.participants = r.participants.map(p => (p.id === participant.id ? participant : p));
+                    r.players = r.players.map(p => (p.id === player.id ? player : p));
                 }
 
                 return r;
             });
 
-            this.sendToAll('participant_updated', { room, participantUpdated: participant });
+            this.sendToAll('player_updated', { room, playerUpdated: player });
         })
     }
 }
