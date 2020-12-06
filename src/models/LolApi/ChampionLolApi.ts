@@ -1,3 +1,4 @@
+import ChampionSpellLolApi from 'src/models/LolApi/ChampionSpellLolApi';
 import ChampionSkinLolApi from './ChampionSkinLolApi';
 import ChampionStatsLolApi from './ChampionStatsLolApi';
 import ImageLolApi from './ImageLolApi';
@@ -6,7 +7,7 @@ export default interface ChampionLolApi {
     version?: string;
     id?: number;
     key?: string;
-    name?: string;
+    name: string;
     title?: string;
     blurb?: string;
     info?: {
@@ -23,4 +24,17 @@ export default interface ChampionLolApi {
     lore?: string;
     allytips?: string[];
     enemytips?: string[];
+    spells?: ChampionSpellLolApi[];
+    passive: ChampionSpellLolApi;
+}
+
+export enum ImageTypesChampionLolApi {
+    splash = 'splash',
+    loading = 'loading',
+}
+
+export enum SkinTypes {
+    onlyDefault = 'only default',
+    allWithoutDefault = 'all without default',
+    all = 'all',
 }

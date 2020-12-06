@@ -1,5 +1,5 @@
 import Model from 'src/models/Model';
-import { uniqueID } from 'src/utils/randomNumber';
+import { uniqueID } from 'src/utils/number';
 
 export default interface User extends Model {
     pseudo: string;

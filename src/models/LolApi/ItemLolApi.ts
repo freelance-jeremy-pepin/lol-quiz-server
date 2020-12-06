@@ -1,10 +1,11 @@
+import { ElementToGuess } from 'src/models/ElementToGuess';
 import MapsLolApi from 'src/models/LolApi/MapsLolApi';
-import ItemStatsLolApi from './ItemStatsLolApi';
 import ImageLolApi from './ImageLolApi';
+import ItemStatsLolApi from './ItemStatsLolApi';
 
-export default interface ItemLolApi {
-    id?: number;
-    name?: string;
+export default interface ItemLolApi extends ElementToGuess {
+    id: number;
+    name: string;
     rune?: {
         isrune?: boolean;
         tier?: number;
@@ -38,5 +39,8 @@ export default interface ItemLolApi {
 }
 
 export function createDefaultLolApiItem(): ItemLolApi {
-    return {};
+    return {
+        id: 0,
+        name: '',
+    };
 }

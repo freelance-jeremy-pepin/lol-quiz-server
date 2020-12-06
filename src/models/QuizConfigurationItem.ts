@@ -5,6 +5,7 @@ export default interface QuizConfigurationItem extends QuizConfiguration {
     items: ItemLolApi[];
 }
 
+// noinspection JSUnusedGlobalSymbols
 export function createDefaultQuizConfigurationItem(): QuizConfigurationItem {
     return {
         ...createDefaultQuizConfiguration(),

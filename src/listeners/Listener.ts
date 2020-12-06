@@ -7,7 +7,7 @@ export default abstract class Listener {
 
     protected store: Store;
 
-    protected debug: boolean = true;
+    protected debug: boolean = false;
 
     protected constructor(io: any, socket: any, store: Store) {
         this.io = io;

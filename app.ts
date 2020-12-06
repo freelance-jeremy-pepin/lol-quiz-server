@@ -14,8 +14,20 @@ const io = require('socket.io')(http, {
 
 const store = new Store();
 
-io.on('connection', (socket: any) => {
+// Supprime les salles trop anciennes
+setInterval(() => {
+    store.rooms = store.rooms.filter(r => {
+        let expiresAt: Date;
 
+        if (typeof r.expiresAt === 'string') {
+            expiresAt = new Date(r.expiresAt);
+        }
+
+        return expiresAt.getTime() - new Date().getTime() > 0;
+    });
+}, 60000)
+
+io.on('connection', (socket: any) => {
     const userListener = new UserListener(io, socket, store);
     userListener.registerListener();
 

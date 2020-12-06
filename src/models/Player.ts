@@ -1,16 +1,17 @@
 import Model from 'src/models/Model';
-import { uniqueID } from 'src/utils/randomNumber';
+import PlayerAnswerHistory from 'src/models/PlayerAnswerHistory';
 import { createDefaultTime, Time } from 'src/models/Time';
-import AnswerHistoryItem from 'src/models/AnswerHistoryItem';
+import { uniqueID } from 'src/utils/number';
 
 export default interface Player extends Model {
     userId: string;
     score: number;
     currentQuestionNumber: number;
     hasFinished: boolean;
-    answersHistoryItem: AnswerHistoryItem[]; // TODO: à remplace par AnswerHistory[]
+    answersHistory: PlayerAnswerHistory[];
     completeTime: Time;
     isReady: boolean;
+    hasQuitRoom: boolean;
 }
 
 export function createDefaultPlayer(): Player {
@@ -20,8 +21,9 @@ export function createDefaultPlayer(): Player {
         score: 0,
         currentQuestionNumber: 0,
         hasFinished: false,
-        answersHistoryItem: [],
+        answersHistory: [],
         completeTime: createDefaultTime(),
         isReady: false,
+        hasQuitRoom: false,
     };
 }

@@ -8,3 +8,13 @@ export function randomNumber(min: number, max: number): number {
 export function uniqueID(): string {
     return Math.random().toString(36).substr(2, 9);
 }
+
+export function stringToInt(value: string): number {
+    const parsed = parseInt(value, 10);
+
+    if (Number.isNaN(parsed)) {
+        return 0;
+    }
+
+    return parsed;
+}
