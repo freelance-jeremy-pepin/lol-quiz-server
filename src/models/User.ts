@@ -3,6 +3,7 @@ import { uniqueID } from 'src/utils/number';
 
 export default interface User extends Model {
     pseudo: string;
+    socketId?: string;
 }
 
 export function createDefaultUser(): User {

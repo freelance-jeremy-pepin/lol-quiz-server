@@ -22,6 +22,8 @@ export default class UserListener extends Listener {
 
     public onCreateOrUpdate() {
         this.socket.on('create_or_update_user', (user: User) => {
+            user.socketId = this.socket.id;
+
             this.receive('create_or_update_user', user);
 
             // Cherche l'utilisateur.

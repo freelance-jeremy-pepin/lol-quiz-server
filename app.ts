@@ -1,5 +1,7 @@
 import RoomListener from './src/listeners/RoomListener';
 import UserListener from './src/listeners/UserListener';
+import Player from './src/models/Player';
+import Room from './src/models/Room';
 import Store from './src/store/Store';
 
 const app = require('express')();
@@ -25,7 +27,7 @@ setInterval(() => {
 
         return expiresAt.getTime() - new Date().getTime() > 0;
     });
-}, 60000)
+}, 60000);
 
 io.on('connection', (socket: any) => {
     const userListener = new UserListener(io, socket, store);
@@ -33,6 +35,26 @@ io.on('connection', (socket: any) => {
 
     const roomListener = new RoomListener(io, socket, store);
     roomListener.registerListener();
+
+    socket.on('disconnect', () => {
+        const userDisconnected = store.users.find(u => u.socketId === socket.id);
+
+        if (userDisconnected && store.rooms) {
+            store.rooms = store.rooms.map((r: Room) => {
+                r.players.map((p: Player) => {
+                    if (p.userId === userDisconnected.id) {
+                        p.hasQuitRoom = true;
+                    }
+
+                    return p;
+                });
+
+                return r;
+            });
+
+            io.emit('all_rooms', store.rooms);
+        }
+    });
 });
 
 http.listen(3000, () => {
